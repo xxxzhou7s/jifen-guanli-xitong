@@ -1,30 +1,14 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>积分管理系统 · 教师登录</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:Inter,"Microsoft YaHei",Arial,sans-serif;background:linear-gradient(135deg,#eef5ff,#f8fbff);color:#172033}.login{min-height:100vh;display:grid;place-items:center}.card{width:min(430px,92vw);background:#fff;border:1px solid #e5eaf1;border-radius:22px;padding:34px;box-shadow:0 20px 60px #1e3a8a14}.brand{text-align:center;margin-bottom:25px}.logo{width:52px;height:52px;margin:auto;border-radius:15px;background:linear-gradient(135deg,#3478ff,#1554e8);color:#fff;display:grid;place-items:center;font-size:27px}.brand h1{font-size:24px;margin:12px 0 5px}.brand p{color:#748094;margin:0}.field{margin:13px 0}.field label{display:block;font-size:13px;color:#667085;margin-bottom:6px}.field input{width:100%;border:1px solid #e5eaf1;border-radius:10px;padding:12px;outline:none}.btn{width:100%;border:0;border-radius:10px;padding:12px;cursor:pointer;background:#2563eb;color:#fff;font-size:15px}.switch{text-align:center;margin-top:15px;color:#748094;font-size:13px}.link{color:#2563eb;cursor:pointer;font-weight:700}.msg{margin-top:12px;text-align:center;color:#e5484d;font-size:13px;min-height:18px}.app{display:none;position:fixed;inset:0;background:#f5f7fb}.app.show{display:block}.app iframe{width:100%;height:100%;border:0;display:block}.top{position:fixed;right:16px;top:16px;z-index:10;display:none}.top.show{display:block}.logout{border:1px solid #e5eaf1;background:#fff;border-radius:9px;padding:9px 13px;cursor:pointer}
-</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="refresh" content="0;url=/app.html">
+<title>积分管理系统</title>
+<style>html,body{margin:0;min-height:100%;font-family:Arial,"Microsoft YaHei",sans-serif;background:#f5f7fb}body{display:grid;place-items:center}.box{text-align:center;color:#667085}.logo{width:52px;height:52px;margin:0 auto 14px;border-radius:15px;background:#2563eb;color:#fff;display:grid;place-items:center;font-size:26px}.box a{color:#2563eb;text-decoration:none;font-weight:700}</style>
 </head>
 <body>
-<div id="login" class="login"><div class="card"><div class="brand"><div class="logo">★</div><h1>积分管理系统</h1><p>教师账号 · 云端正式版</p></div><div class="field"><label>教师账号</label><input id="username" autocomplete="username" placeholder="例如：admin"></div><div class="field"><label>密码</label><input id="password" type="password" autocomplete="current-password" placeholder="至少 6 位"></div><button id="loginBtn" class="btn">登录</button><div class="switch">首次使用？ <span id="signup" class="link">注册教师账号</span></div><div id="msg" class="msg"></div></div></div>
-<div id="app" class="app"><iframe id="appFrame" src="about:blank"></iframe></div><div id="top" class="top"><button id="logout" class="logout">退出登录</button></div>
-<script>
-const SUPABASE_URL='https://cbjbxesylgcfqpnibcle.supabase.co';
-const SUPABASE_KEY='sb_publishable_EL0RtF2hun52D9atJWUrPQ_P3yb7eYD';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id);
-let appShown=false;
-function teacherEmail(u){return `${u.toLowerCase().replace(/[^a-z0-9._-]/g,'-')}@teacher.jifen.local`}
-function valid(u){return /^[a-z0-9._-]{3,32}$/.test(u)}
-function showLogin(){appShown=false;$('login').style.display='grid';$('app').classList.remove('show');$('top').classList.remove('show')}
-function showApp(){if(appShown)return;appShown=true;$('login').style.display='none';$('app').classList.add('show');$('top').classList.add('show');const frame=$('appFrame');if(frame.getAttribute('src')!=='/app.html')frame.src='/app.html'}
-async function check(){const {data:{session}}=await sb.auth.getSession();if(session)showApp();else showLogin()}
-$('loginBtn').onclick=async()=>{const u=$('username').value.trim().toLowerCase(),p=$('password').value;if(!valid(u))return $('msg').textContent='账号需为 3-32 位字母、数字、点、下划线或短横线';if(!p)return $('msg').textContent='请输入密码';$('msg').textContent='登录中…';const {error}=await sb.auth.signInWithPassword({email:teacherEmail(u),password:p});if(error)$('msg').textContent='账号或密码错误';};
-$('signup').onclick=async()=>{const u=$('username').value.trim().toLowerCase(),p=$('password').value;if(!valid(u))return $('msg').textContent='账号需为 3-32 位字母、数字、点、下划线或短横线';if(p.length<6)return $('msg').textContent='密码至少 6 位';$('msg').textContent='正在创建教师账号…';try{const r=await fetch(`${SUPABASE_URL}/functions/v1/teacher-register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p,display_name:u})});const d=await r.json();if(!r.ok)return $('msg').textContent=d.error||'注册失败';const {error}=await sb.auth.signInWithPassword({email:teacherEmail(u),password:p});if(error)return $('msg').textContent='账号已创建，请重新登录';$('msg').textContent=''}catch(e){$('msg').textContent='注册服务暂时不可用'}};
-$('logout').onclick=async()=>{await sb.auth.signOut();showLogin();$('appFrame').src='about:blank'};
-sb.auth.onAuthStateChange((_event,session)=>{if(session)showApp();else showLogin()});
-check();
-</script>
-</body></html>
+<div class="box"><div class="logo">★</div><div>正在进入积分管理系统…</div><p><a href="/app.html">如果没有自动进入，点击这里</a></p></div>
+<script>location.replace('/app.html');</script>
+</body>
+</html>
