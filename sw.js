@@ -7,10 +7,10 @@ const EXAM_SCRIPT = String.raw`
   const css = document.createElement('style');
   css.textContent = '.exam-panel{margin-top:12px}.exam-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.exam-toolbar .field{flex:1;min-width:120px;margin:0}.exam-list{max-height:300px;overflow:auto}.exam-row{display:grid;grid-template-columns:1fr 80px 90px 70px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #f0f2f5;font-size:13px}.exam-row:last-child{border-bottom:0}.exam-score{font-size:18px;font-weight:900;color:#2563eb}.exam-empty{padding:20px;text-align:center;color:#748094}.exam-summary{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px}.exam-summary b{font-size:20px;color:#2563eb}.exam-add{margin-top:12px;padding-top:12px;border-top:1px solid #eef1f5}@media(max-width:720px){.exam-row{grid-template-columns:1fr 65px 80px 55px}.exam-toolbar .field{min-width:100px}}';
   document.head.appendChild(css);
-  function getSelected(){ return window.state && window.state.selected ? window.state.selected : null; }
+  function getSelected(){ return typeof state !== 'undefined' && state.selected ? state.selected : null; }
   async function loadScores(studentId){
-    if(!window.sb) return [];
-    const {data,error}=await window.sb.from('exam_scores').select('*').eq('student_id',studentId).order('exam_date',{ascending:false}).order('created_at',{ascending:false});
+    if(typeof sb === 'undefined') return [];
+    const {data,error}=await sb.from('exam_scores').select('*').eq('student_id',studentId).order('exam_date',{ascending:false}).order('created_at',{ascending:false});
     if(error){ console.error(error); return []; }
     return data||[];
   }
@@ -41,15 +41,15 @@ const EXAM_SCRIPT = String.raw`
     if($('examSave')) $('examSave').onclick=async function(){
       const name=$('examName').value.trim(), subject=$('examSubject').value.trim(), date=$('examDate').value, score=Number($('examScore').value), total=Number($('examTotal').value||100);
       if(!name||!subject||!date||Number.isNaN(score)||score<0||!total||score>total) return window.toast ? window.toast('请填写正确的考试名称、科目和分数') : alert('请填写正确的考试名称、科目和分数');
-      const user=window.state&&window.state.user;
-      const {error}=await window.sb.from('exam_scores').insert({student_id:s.id,teacher_id:user&&user.id?user.id:null,exam_name:name,subject,exam_date:date,score,total_score:total});
+      const user=(typeof state !== 'undefined')?state.user:null;
+      const {error}=await sb.from('exam_scores').insert({student_id:s.id,teacher_id:user&&user.id?user.id:null,exam_name:name,subject,exam_date:date,score,total_score:total});
       if(error) return window.toast?window.toast('保存失败：'+error.message):alert(error.message);
       if(window.toast) window.toast('考试成绩已保存');
       await renderExamSection();
     };
     panel.querySelectorAll('[data-del-exam]').forEach(btn=>btn.onclick=async()=>{
       if(!confirm('确定删除这条考试成绩吗？')) return;
-      const {error}=await window.sb.from('exam_scores').delete().eq('id',btn.dataset.delExam);
+      const {error}=await sb.from('exam_scores').delete().eq('id',btn.dataset.delExam);
       if(error) return window.toast?window.toast('删除失败：'+error.message):alert(error.message);
       if(window.toast) window.toast('已删除');
       await renderExamSection();
