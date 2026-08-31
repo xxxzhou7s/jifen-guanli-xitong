@@ -1,0 +1,2 @@
+2026-08-31
+Vercel production redeploy trigger. Exam score module is already included in sw.js and the exam_scores Supabase table.
