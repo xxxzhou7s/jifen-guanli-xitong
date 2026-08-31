@@ -1,0 +1,12 @@
+/* 手机端弹窗最终修复：保证添加/编辑学生的保存按钮始终可见 */
+@media (max-width:720px){
+  .modal-bg{display:none;align-items:flex-end!important;padding:0!important;overflow:hidden!important;overscroll-behavior:none!important}
+  .modal-bg.show{display:flex!important}
+  .modal{width:100%!important;max-width:none!important;max-height:calc(100dvh - env(safe-area-inset-top))!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;border-radius:20px 20px 0 0!important}
+  .modal-head{position:relative!important;top:auto!important;flex:0 0 auto!important}
+  .modal-body{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important}
+  .modal-foot{display:flex!important;position:relative!important;bottom:auto!important;flex:0 0 auto!important;min-height:64px!important;padding:10px 15px calc(10px + env(safe-area-inset-bottom))!important;background:#fff!important;z-index:50!important;visibility:visible!important;opacity:1!important}
+  .modal-foot .btn{display:block!important;visibility:visible!important;opacity:1!important;min-height:44px!important;flex:1 1 0!important}
+  #formModal .modal-foot,#formModal .modal-foot #formSave{display:flex!important;visibility:visible!important;opacity:1!important}
+  #formModal .modal-foot #formSave{display:block!important;background:var(--blue)!important;color:#fff!important}
+}
