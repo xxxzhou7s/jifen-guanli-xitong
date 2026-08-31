@@ -1,4 +1,4 @@
-/* 手机端正式优化 v6：移动优先、卡片化、减少横向滚动 */
+/* 手机端正式优化 v7：修复添加学生弹窗无法滚动到底部的问题，并优化触摸滚动 */
 @media (max-width:720px){
   :root{--mobile-radius:16px}
   html,body{width:100%;min-width:0;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
@@ -30,7 +30,13 @@
   .rewardgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.reward{padding:9px;border-radius:13px}.reward .icon{height:76px;font-size:34px}.reward b{font-size:13px;margin-top:7px}.reward small{font-size:11px}.reward button{margin-top:7px;padding:9px 7px;font-size:12px}
   #settings .settingsgrid{display:grid;grid-template-columns:1fr;gap:11px}#settings .panel{overflow:hidden}.settingsgrid .panel-head{padding:13px 14px}#settings .panel-body{padding:11px 13px}#settings .custom{display:grid;grid-template-columns:minmax(0,1fr) 78px;gap:7px;margin:0 0 10px}#settings .custom button{grid-column:1/-1;width:100%;padding:10px}
   #settings .reasonline{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"badge name points" "badge name edit";gap:4px 8px;align-items:center;padding:11px 2px;border-bottom:1px solid #eef1f5}#settings .reasonline .badge{grid-area:badge;align-self:start;margin-top:2px;white-space:nowrap;padding:4px 7px}#settings .reasonline>span:nth-child(2){grid-area:name;min-width:0;font-size:14px;line-height:1.35;white-space:normal;overflow-wrap:anywhere}#settings .reasonline>b{grid-area:points;font-size:14px;white-space:nowrap;color:var(--blue)}#settings .reasonline .btn{grid-area:edit;justify-self:end;min-width:56px;padding:7px 10px;font-size:12px;border-radius:10px}#settings .reasonline .empty{grid-column:1/-1}
-  .modal-bg{padding:0;align-items:flex-end}.modal{width:100%;max-width:none;max-height:94vh;border-radius:20px 20px 0 0;animation:sheetIn .2s ease-out}.modal-head{padding:14px 16px}.modal-body{padding:14px 15px 20px}.modal-foot{padding:10px 15px calc(10px + env(safe-area-inset-bottom))}.x{width:36px;height:36px}@keyframes sheetIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .modal-bg{padding:0;align-items:flex-end;overflow:hidden;overscroll-behavior:none}
+  .modal{width:100%;max-width:none;height:auto;max-height:calc(100dvh - env(safe-area-inset-top));border-radius:20px 20px 0 0;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 28px 90px rgba(15,23,42,.24);animation:sheetIn .2s ease-out}
+  .modal-head{padding:14px 16px;flex:0 0 auto;position:relative;top:auto}
+  .modal-body{padding:14px 15px 20px;flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+  .modal-foot{padding:10px 15px calc(10px + env(safe-area-inset-bottom));flex:0 0 auto;position:relative;bottom:auto;display:flex;gap:8px;background:#fff;box-shadow:0 -4px 14px rgba(15,23,42,.05);z-index:2}
+  .modal-foot .btn{min-height:44px;flex:1}
+  .x{width:36px;height:36px}@keyframes sheetIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
   .toast{left:50%;right:auto;bottom:82px;transform:translateX(-50%);font-size:12px;padding:9px 13px;white-space:nowrap}
   .login{min-height:100svh;padding:16px 12px;place-items:center}.login-card{width:min(430px,100%);padding:25px 20px;border-radius:20px}.brand{margin-bottom:21px}.brand h1{font-size:23px}.brand p{font-size:13px}.field{margin:11px 0}.field input,.field select{padding:12px;border-radius:12px}.login .btn{min-height:46px}
 }
